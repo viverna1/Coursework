@@ -1,0 +1,25 @@
+#auth-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+#auth-form h1 {
+    text-align: center;
+}
+
+#auth-form input {
+    margin-bottom: 10px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s ease-in-out;
+}
+#auth-form input:focus {
+    border-color: #ff5733;
+    box-shadow: 0 0 5px rgba(255, 87, 51, 0.5);
+}

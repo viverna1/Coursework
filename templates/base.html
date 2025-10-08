@@ -6,22 +6,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block head %}{% endblock %}
 </head>
 
 <body>
     <header>
-        <h1>{% block page_title %}{% endblock %}</h1>
+        <a href="/">
+            <h1>
+                Сделка
+            </h1>
+        </a>
     
-        <nav>
-            <a href="/">Главная</a>
-            <a href="/products">Вторая страница</a>
-            <a href="/auth">Авторизация</a>
-            <a href="/users">пользователи</a>
-        </nav>
+        <!-- <nav id="main-nav">
+            <ul>
+                <li><a href="/">Главная</a></li>
+                <li><a href="/products">Вторая страница</a></li>
+                <li><a href="/auth">Авторизация</a></li>
+                <li><a href="/users">пользователи</a></li>
+            </ul>
+        </nav> -->
+
+        <div id="search-bar-container">
+            <input type="text" name="search-bar" id="search-bar" placeholder="Поиск..">
+            <button type="submit" id="search-bar-button">Найти</button>
+        </div>
+
+        <div id="right-panel">
+            {% if 'username' in session %}
+                <a class="header-btn" href="/logout"><span id="user-name">{{ session['username'] }}</span></a>
+            {% else %}
+                <a class="header-btn" href="/auth">Войти</a>
+            {% endif %}
+
+            <button id="settings-button">
+                <!-- <img src="{{ url_for('static', filename=session.get('photo', '/static/images/profile-image-placeholder.png')) }}" 
+                alt="Profile Image" width="40" height="40"> -->
+                <img class="profile-image" src="/static/images/profile-image-placeholder.png" alt="123" width="40" height="40">
+            </button>
+        </div>
     </header>
+
     <main>
         {% block main %}{% endblock %}
     </main>
+    
     <footer>
         <p>© 2025 My Website</p>
     </footer>

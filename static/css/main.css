@@ -165,26 +165,47 @@ header a h1 {
     border: 2px solid #fff;
 }
 
+.button-container {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
 .btn {
+    /* Цвета */
     background-color: var(--accent-color);
     color: #fff;
-    border: none;
-    padding: 12px 24px;
-    cursor: pointer;
+    
+    /* Размеры и отступы */
+    padding: 12px 12px;
     border-radius: 8px;
+    
+    /* Текст */
     font-size: 16px;
     font-weight: 500;
     font-family: inherit;
-    transition: all 0.2s ease-in-out;
-    position: relative;
-    overflow: hidden;
+
+    /* для ссылки */
+    text-align: center;
+    text-decoration: none;
+    
+    /* Границы */
+    border: none;
     outline: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    /* Расположение */
+    position: relative;
+    flex: 1;
+    
+    /* Взаимодействие */
+    cursor: pointer;
+    overflow: hidden;
+    
+    /* Анимация */
+    transition: all 0.2s ease-in-out;
 }
-.btn:hover {
+.btn:not(.blue):hover {
     background-color: #ff5733;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 .btn:active {
     transform: translateY(0);
@@ -201,6 +222,19 @@ header a h1 {
     transform: none;
     box-shadow: none;
 }
+
+.blue {
+    background-color: var(--secondary-color);
+}
+.blue:hover {
+    background-color: #8eb9d2;
+}
+
+a.gray {
+    text-align: center;
+    color: #8b8b8b;
+}
+
 
 
 

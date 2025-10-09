@@ -4,9 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    {% block head %}{% endblock %}
+    <title>test</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/auth.css">
 </head>
 
 <body>
@@ -32,11 +32,7 @@
         </div>
 
         <div id="right-panel">
-            {% if 'username' in session %}
-                <a class="header-btn" href="/logout"><span id="user-name">{{ session['username'] }}</span></a>
-            {% else %}
-                <a class="header-btn" href="/login">Войти</a>
-            {% endif %}
+            <a class="header-btn" href="/login">Войти</a>
 
             <button id="settings-button">
                 <!-- <img src="{{ url_for('static', filename=session.get('photo', '/static/images/profile-image-placeholder.png')) }}" 
@@ -47,14 +43,26 @@
     </header>
 
     <main>
-        {% block main %}{% endblock %}
+        <form action="/login" method="post" id="login-form" class="auth-form">
+            <h1>Авторизация</h1>
+            
+            <label for="email">Эл. почта</label>
+            <input type="text" name="email" placeholder="Введите почту" required>
+
+            <label for="password">Пароль</label>
+            <input type="password" name="password" placeholder="Введите пароль" required>
+
+            <div class="button-container">
+                <a href="/register" class="btn blue">Зарегестрироваться</a>
+                <button type="submit" class="btn">Войти</button>
+            </div>
+        </form>
     </main>
     
     <footer>
-        <p>© 2025 ПОМЕНЯТЬ ФУТЕР</p>
+        <p>© 2025 My Website</p>
     </footer>
 
-    <script src="/static/js/main.js"></script>
-    <script src="/static/js/{% block addjs %}{% endblock %}.js"></script>
+    <script src="/static/js/script.js"></script>
 </body>
 </html>

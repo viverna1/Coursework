@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Авторизация{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block main %}
+<form action="/login" method="post" id="login-form" class="auth-form">
+  <h1>Авторизация</h1>
+  
+  {% if error == "userNotFound" %}
+    <label for="email" style="color: red;">
+      Эл. почта не найдена
+    </label>
+    {% else %}
+    <label for="email">Эл. почта</label>
+  {% endif %}
+  <input type="text" name="email" placeholder="Введите почту" value="{{ email }}" required />
+
+  {% if error == "wrongPass" %}
+    <label for="password" style="color: red;">
+      Пароль неверный
+    </label>
+    {% else %}
+    <label for="password">Пароль</label>
+  {% endif %}
+  <input type="password" name="password" placeholder="Введите пароль" value="{{ password }}" required />
+
+  <div class="button-container">
+      <a href="/register" class="btn blue">Зарегестрироваться</a>
+      <button type="submit" class="btn">Войти</button>
+  </div>
+
+  <a class="gray" href="/resetPassword">Восстановить пароль</a>
+</form>
+{% endblock %}

@@ -2,9 +2,6 @@ from flask import Flask, render_template, request, session, redirect
 import os
 import sqlite3
 
-
-
-
 # =================== База данных ===================
 
 """
@@ -13,12 +10,7 @@ c.execute('DELETE FROM users WHERE id > ?', ('3',))
 
 # Oбновить данные
 c.execute('UPDATE users SET age = ? WHERE name = ?', (28, 'Alice'))
-
-c.execute('SELECT * FROM users')
-print_table(c.fetchall())
-
-db.commit()
-db.close()"""
+"""
 
 
 def init_db():
@@ -34,7 +26,7 @@ def init_db():
     c.execute('''
         CREATE TABLE IF NOT EXISTS users(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
+            username TEXT NOT NULL,
             email TEXT UNIQUE,
             password TEXT NOT NULL,
             tel TEXT,
@@ -75,15 +67,42 @@ class ConectDB:
 
 # =================== Функции ==================
 
-def get_username_by_email(email):
-    conn = get_db_connection()
-    c = conn.cursor()
-    c.execute("SELECT username FROM users WHERE email = ?", (email,))
-    row = c.fetchone()
-    conn.close()
-    if row:
-        return row["username"]   # у тебя row_factory = sqlite3.Row, можно по имени
-    return None
+def get_user_by_email(email):
+    with ConectDB() as c:
+        c.execute("SELECT * FROM users WHERE email = ?", (email,))
+        user = c.fetchone()
+
+        return user
+
+
+def login_user(user, password):
+    if isinstance(user, str):
+        user = get_user_by_email(user)
+
+    if user is None or user == "None":
+        return "userNotFound"  # пользователь не найден
+    
+    if user["password"] == password:
+        session["username"] = user["username"]
+        return "success"  # успешный вход
+    else:
+        return "wrongPass"  # неверный пароль
+
+
+def register_user(username, email, password):
+    if get_user_by_email(email):
+        return "emailExist"
+
+    with ConectDB() as c:
+        c.execute('''
+            INSERT INTO users (username, email, password) VALUES (?, ?, ?)
+        ''', (username, email, password)
+        )
+        session["username"] = username
+
+        print(f"\033[94mЗарегестрирован {username}, пароль: {password}\033[0m")
+        return "success"
+
 
 
 # ==================== Сайт ====================
@@ -97,44 +116,50 @@ def home():
     return render_template('index.html')
 
 
-@app.route('/auth', methods=['GET', 'POST'])
-def auth():
+# ----- Аккаунт -----
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
 
-        # Соединение с бд
-        with ConectDB() as c:
-            # Проверка на существование логина
 
-            user = None
+        status = login_user(email, password)
 
-            # сначала ищем по username
-            c.execute("SELECT * FROM users WHERE username = ?", (username,))
-            user = c.fetchone()
+        if status == "success":
+            return redirect('/')
+        return render_template('login.html', error=status,
+                               email=email, password=password)
 
-            # если не нашли, ищем по email
-            if not user:
-                c.execute("SELECT * FROM users WHERE email = ?", (username,))
-                user = c.fetchone()
-                username = get_username_by_email(username)
-
-            if user:
-                pass
-            else:
-                c.execute('''
-                    INSERT INTO users (username, email, password) VALUES (?, ?, ?)
-                ''', (username, "test@gmail.com", password)
-                )
-
-                print(f"Зарегестрирован {username}, пароль: {password}")
-            session["username"] = username
-
-    return render_template('auth.html')
+    return render_template('login.html')
 
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
 
-# Функции на сайте
+        status = register_user(username, email, password)
+
+        if status == "success":
+            return redirect('/')
+        elif status == "emailExist":
+            return render_template('register.html', error="emailExist",
+                                username=username, email=email, password=password)
+        return redirect('/')
+
+    return render_template('register.html')
+
+
+@app.route('/resetPassword', methods=['GET', 'POST'])
+def resetPassword():
+    return render_template('/resetPassword.html')
+
+# Функции на сайте:
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)

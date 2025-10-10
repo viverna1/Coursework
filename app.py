@@ -2,6 +2,12 @@ from flask import Flask, render_template, request, session, redirect
 import os
 import sqlite3
 
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+import config
+
 # =================== База данных ===================
 
 """
@@ -104,6 +110,29 @@ def register_user(username, email, password):
         return "success"
 
 
+def send_email(theme, message, recipient):
+    sender = "viverna2alt@gmail.com"
+    password = config.email_password
+
+    # Создаём сообщение
+    msg = MIMEMultipart()
+    msg['From'] = sender
+    msg['To'] = recipient
+    msg['Subject'] = theme
+    msg.attach(MIMEText(message, 'plain'))
+
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(sender, password)
+        server.sendmail(sender, recipient, msg.as_string())
+        server.quit()
+        return "✅ Сообщение отправилось"
+
+    except Exception as e:
+        return f"{e}\n Проверьте логин или пароль"
+
+
 
 # ==================== Сайт ====================
 
@@ -156,7 +185,24 @@ def register():
 
 @app.route('/resetPassword', methods=['GET', 'POST'])
 def resetPassword():
+    if request.method == 'POST':
+        email = request.form['email']
+
+        user =  get_user_by_email(email)
+
+        if user:
+            message = f"Имя: {user["username"]}\nПароль: {user["password"]}"
+            result = send_email("Ваш логин и пароль", message, email)
+            print(result, email)
+            return render_template('/resetPassword.html', status="emailCorrect",
+                                   email=email)
+        else:
+            return render_template('/resetPassword.html', status="userNotFound",
+                                   email=email)
+
     return render_template('/resetPassword.html')
+
+
 
 # Функции на сайте:
 
@@ -166,6 +212,7 @@ def logout():
     return redirect('/')
 
 
+    
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)

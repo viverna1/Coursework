@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     {% block head %}{% endblock %}
@@ -38,7 +39,7 @@
                 <a class="header-btn" href="/login">Войти</a>
             {% endif %}
 
-            <button id="settings-button">
+            <button id="menu-button">
                 <!-- <img src="{{ url_for('static', filename=session.get('photo', '/static/images/profile-image-placeholder.png')) }}" 
                 alt="Profile Image" width="40" height="40"> -->
                 <img class="profile-image" src="/static/images/profile-image-placeholder.png" alt="123" width="40" height="40">
@@ -49,11 +50,20 @@
     <main>
         {% block main %}{% endblock %}
     </main>
+
+    <div id="menu" hidden>
+        <ul>
+            <li><a href="/settings">Настройки</a></li>
+            <hr>
+            <li><a style="color: red;" href="/logout">Выйти</a></li>
+        </ul>
+    </div>
     
     <footer>
         <p>© 2025 ПОМЕНЯТЬ ФУТЕР</p>
     </footer>
 
     <script src="/static/js/main.js"></script>
+    <script src="/static/js/{% block addjs %}{% endblock %}.js"></script>
 </body>
 </html>

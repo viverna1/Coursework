@@ -5,6 +5,7 @@ import sqlite3
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from werkzeug.security import generate_password_hash, check_password_hash
 
 import config
 
@@ -88,7 +89,7 @@ def login_user(user, password):
     if user is None or user == "None":
         return "userNotFound"  # пользователь не найден
     
-    if user["password"] == password:
+    if check_password_hash(user["password"], password):
         session["username"] = user["username"]
         return "success"  # успешный вход
     else:
@@ -99,10 +100,11 @@ def register_user(username, email, password):
     if get_user_by_email(email):
         return "emailExist"
 
+    hashed_password = generate_password_hash(password)
     with ConectDB() as c:
         c.execute('''
             INSERT INTO users (username, email, password) VALUES (?, ?, ?)
-        ''', (username, email, password)
+        ''', (username, email, hashed_password)
         )
         session["username"] = username
 
@@ -131,6 +133,8 @@ def send_email(theme, message, recipient):
 
     except Exception as e:
         return f"{e}\n Проверьте логин или пароль"
+
+
 
 
 
@@ -203,6 +207,36 @@ def resetPassword():
     return render_template('/resetPassword.html')
 
 
+# ----- Настройки -----
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    return render_template("/settings.html")
+
+
+@app.route('/changeUsername', methods=['POST'])
+def change_username():
+    new_username = request.form.get('value')
+    
+    return render_template("/settings.html", status="success")
+
+@app.route('/changeEmail', methods=['POST'])
+def change_email():
+    new_email = request.form.get('value')
+    
+    return render_template("/settings.html", status="success")
+
+@app.route('/changePhoto', methods=['POST'])
+def change_photo():
+    photo = request.files.get('value')
+
+    return render_template("/settings.html", status="success")
+
+@app.route('/changeNumber', methods=['POST'])
+def change_number():
+    new_number = request.form.get('value')
+    
+    return render_template("/settings.html", status="success")
 
 # Функции на сайте:
 

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Настройки{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+{% endblock %}
+
+{% block main %}
+<aside id="settings-nav">
+    <h1>Настройки</h1>
+
+    <ul>
+        <li><a href="#account-settings">Аккаунт</a></li>
+    </ul>
+</aside>
+
+<def id="settings-main">
+    <h1 class="section-title">Аккаунт</h1>
+
+    <h2 class="section-title">Отображаемые данные</h2>
+    <section class="settings-section" id="account-settings">
+
+        <div class="setting">
+            <p><b>Фото:</b>
+                <img class="profile-image" 
+                src="/static/images/profile-image-placeholder.png" alt="Не удалось загрузить">
+            </p>
+            <button class="a-btn settings-button" id="change-photo">Сменить фото</button>
+        </div>
+
+        <div class="setting">
+            <p><b>Имя:</b> {{ session['username'] }}</p>
+            <button class="a-btn settings-button" id="change-username">Сменить имя</button>
+        </div>
+    </section>
+
+
+    <h2 class="section-title">Другие данные</h2>
+    <section class="settings-section" id="account-settings">
+
+        <div class="setting">
+            <p><b>Почта:</b> </p>
+            <button class="a-btn settings-button" id="change-email">Сменить почту</button>
+        </div>
+
+        <div class="setting">
+            <p><b>Номер:</b> </p>
+            <button class="a-btn settings-button" id="change-number">Сменить номер</button>
+        </div>
+    </section>
+</def>
+{% endblock %}
+
+{% block addjs %}
+settings
+{% endblock %}

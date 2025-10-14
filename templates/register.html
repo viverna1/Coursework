@@ -8,7 +8,7 @@
 <form action="/register" method="post" id="register-form" class="auth-form">
   <h1>Регистрация</h1>
   <label for="username">Имя</label>
-  <input type="text" name="username" placeholder="Имя" value="{{ username }}" required>
+  <input class="inp" type="text" name="username" placeholder="Имя" value="{{ username }}" required>
   
   {% if error == "emailExist" %}
     <label for="email" style="color: red;">
@@ -17,13 +17,13 @@
     {% else %}
     <label for="email">Эл. почта</label>
   {% endif %}
-  <input type="email" name="email" placeholder="Почта" value="{{ email }}" required />
+  <input class="inp" type="email" name="email" placeholder="Почта" value="{{ email }}" required />
 
   <label for="password">Пароль</label>
-  <input type="password" name="password" placeholder="Пароль" value="{{ password }}" required />
+  <input class="inp" type="password" name="password" placeholder="Пароль" value="{{ password }}" required />
 
   <label for="password2">Повторение пароля</label>
-  <input type="password" name="password2" placeholder="Повторение пароля" required />
+  <input class="inp" type="password" name="password2" placeholder="Повторение пароля" required />
 
   <div class="button-container">
     <a href="/login" class="btn blue">Войти</a>

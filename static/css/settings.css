@@ -35,8 +35,7 @@ a {
 
     margin: 0 auto;
     width: 100%;
-    flex: 0 1;
-    max-width: 400px;
+    max-width: 500px;
 }
 
 .setting {
@@ -51,9 +50,4 @@ a {
 
 .section-title {
     text-align: center;
-}
-
-
-* {
-    justify-content: space-between;
 }

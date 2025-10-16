@@ -352,11 +352,13 @@ footer {
 
 
 @media (max-width: 768px) {
+}
+
+@media (max-width: 550px) {
     #search-bar-container {
         display: none;
     }
 }
 
-/* Для очень маленьких экранов */
 @media (max-width: 480px) {
 }

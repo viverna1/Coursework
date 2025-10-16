@@ -14,9 +14,6 @@ import config
 """
 # Удалить данные1
 c.execute('DELETE FROM users WHERE id > ?', ('3',))
-
-# Oбновить данные
-c.execute('UPDATE users SET age = ? WHERE name = ?', (28, 'Alice'))
 """
 
 
@@ -82,6 +79,14 @@ def get_user_by_email(email):
         return user
 
 
+def get_current_user():
+    with ConectDB() as c:
+        c.execute("SELECT * FROM users WHERE id = ?", (session["id"],))
+        user = c.fetchone()
+
+        return user
+
+
 def login_user(user, password):
     if isinstance(user, str):
         user = get_user_by_email(user)
@@ -91,13 +96,16 @@ def login_user(user, password):
     
     if check_password_hash(user["password"], password):
         session["username"] = user["username"]
+        session["id"] = user["id"]
         return "success"  # успешный вход
     else:
         return "wrongPass"  # неверный пароль
 
 
 def register_user(username, email, password):
-    if get_user_by_email(email):
+    user = get_user_by_email(email)
+
+    if user:
         return "emailExist"
 
     hashed_password = generate_password_hash(password)
@@ -110,6 +118,7 @@ def register_user(username, email, password):
 
         print(f"\033[94mЗарегестрирован {username}, пароль: {password}\033[0m")
         return "success"
+    session["id"] = user["id"]
 
 
 def send_email(theme, message, recipient):
@@ -135,7 +144,9 @@ def send_email(theme, message, recipient):
         return f"{e}\n Проверьте логин или пароль"
 
 
-
+def change_value(field, new_val, user_id):
+    with ConectDB() as c:
+        c.execute(f'UPDATE users SET {field} = ? WHERE id = ?', (new_val, user_id))
 
 
 # ==================== Сайт ====================
@@ -211,32 +222,57 @@ def resetPassword():
 
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
-    return render_template("/settings.html")
+    user = get_current_user()
+    return render_template("/settings.html", email=user["email"], number=user["tel"])
 
 
 @app.route('/changeUsername', methods=['POST'])
 def change_username():
     new_username = request.form.get('value')
+    user = get_current_user()
+
+    change_value("username", new_username, session["id"])
+    session["username"] = new_username
     
-    return render_template("/settings.html", status="success")
+    return render_template("/settings.html", email=user["email"], number=user["tel"])
+
+@app.route('/changePassword', methods=['POST'])
+def change_password():
+    new_password = request.form.get('value')
+    hash_password =  generate_password_hash(new_password)
+    user = get_current_user()
+
+    change_value("password", hash_password, session["id"])
+    
+    return render_template("/settings.html", email=user["email"], number=user["tel"])
 
 @app.route('/changeEmail', methods=['POST'])
 def change_email():
     new_email = request.form.get('value')
+    user = get_current_user()
+
+    change_value("email", new_email, session["id"])
     
-    return render_template("/settings.html", status="success")
+    return render_template("/settings.html", email=user["email"], number=user["tel"])
 
 @app.route('/changePhoto', methods=['POST'])
 def change_photo():
     photo = request.files.get('value')
+    user = get_current_user()
+    
+    pass
 
-    return render_template("/settings.html", status="success")
+    return render_template("/settings.html", email=user["email"], number=user["tel"])
 
 @app.route('/changeNumber', methods=['POST'])
 def change_number():
     new_number = request.form.get('value')
+    user = get_current_user()
     
-    return render_template("/settings.html", status="success")
+    change_value("tel", new_number, session["id"])
+    
+    return render_template("/settings.html", email=user["email"], number=user["tel"])
+
 
 # Функции на сайте:
 

@@ -38,12 +38,17 @@
     <section class="settings-section" id="account-settings">
 
         <div class="setting">
-            <p><b>Почта:</b> </p>
+            <p><b>Почта:</b> {{ email }}</p>
             <button class="a-btn settings-button" id="change-email">Сменить почту</button>
         </div>
 
         <div class="setting">
-            <p><b>Номер:</b> </p>
+            <p><b>Пароль:</b> (скрыт)</p>
+            <button class="a-btn settings-button" id="change-password">Сменить пароль</button>
+        </div>
+
+        <div class="setting">
+            <p><b>Номер:</b> {{ number }}</p>
             <button class="a-btn settings-button" id="change-number">Сменить номер</button>
         </div>
     </section>

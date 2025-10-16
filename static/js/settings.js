@@ -108,6 +108,7 @@ function createInputPopup(button_id) {
 const button_dict = {
     "change-username": ["Введите новое имя:", "/changeUsername"],
     "change-photo": ["Вставьте новое фото:", "/changePhoto"],
+    "change-password": ["Введите новый пароль:", "/changePassword"],
     "change-email": ["Введите новую почту:", "/changeEmail"],
     "change-number": ["Введите новый номер:", "/changeNumber"]
 }
@@ -119,7 +120,6 @@ const buttons = document.querySelectorAll(".settings-button")
 // 
 buttons.forEach(button => {
     var current_id = button.id;
-    console.log(current_id);
     button.addEventListener("click", () => {
         createInputPopup(current_id);
     });
